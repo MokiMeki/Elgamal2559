@@ -50,8 +50,9 @@ public class Elgamal2559 {
                 case 5:
                     break;
                 case 6: writePrivateKeyToFile();
+                    System.out.print(retrievePrivateKeyFromFile());
                     break;
-                case 7: System.out.print(retrievePrivateKeyFromFile());
+                case 7:
                     break;
                 default: continue;
             }
