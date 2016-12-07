@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import java.util.Map;
  * Created by snow_ on 06-Dec-16.
  */
 public class Elgamal2559 {
-    private long n = 32,k;
+    private long n = 32,k = 5;
     private String filePath = "./src/res/lumyai.png";
 
     public Elgamal2559(){}
@@ -19,7 +20,7 @@ public class Elgamal2559 {
         this.filePath = filePath;
     }
 
-    public long generateP(){
+    private long generateP(){
         File file = new File(filePath);
         FileInputStream fileInputStream = null;
         long input = 0;
@@ -98,7 +99,7 @@ public class Elgamal2559 {
         }
     }
 
-    public long fastExponential(long base, long power, long mod){
+    private long fastExponential(long base, long power, long mod){
         long increasingPower = 1;
         long value = base;
         long answer = 1;
@@ -122,7 +123,7 @@ public class Elgamal2559 {
         return answer;
     }
 
-    public long inverseFromEuclidExtended(long number, long mod){
+    private long inverseFromEuclidExtended(long number, long mod){
         long n1 = mod;
         long n2 = number%mod;
         long a1 = 1,b1 = 0, a2 = 0, b2 = 1;
@@ -147,7 +148,7 @@ public class Elgamal2559 {
         return b2;
     }
 
-    public long gcdFromEuclidExtended(long number, long mod){
+    private long gcdFromEuclidExtended(long number, long mod){
         long n1 = mod;
         long n2 = number%mod;;
         long a1 = 1,b1 = 0, a2 = 0, b2 = 1;
@@ -176,7 +177,7 @@ public class Elgamal2559 {
         return n2;
     }
 
-    public long genGenerator(long p){
+    private long genGenerator(long p){
         long generator = (long)(Math.random()*(p-1))+1;
         while(fastExponential(generator,(p-1)/2,p)==1){
             generator = (long)(Math.random()*(p-1))+1;
@@ -184,7 +185,7 @@ public class Elgamal2559 {
         return generator;
     }
 
-    public Signature sign(PrivateKey sk,long hashValue){
+    private Signature sign(PrivateKey sk,long hashValue){
         long p = sk.getP();
         long k = randomK(p);
         long r = fastExponential(sk.getG(),k,p);
@@ -206,7 +207,7 @@ public class Elgamal2559 {
         }
     }
 
-    public boolean verifyHash(PublicKey pk, Signature sign, long hashValue){
+    private boolean verifyHash(PublicKey pk, Signature sign, long hashValue){
         long g = pk.getG();
         long p = pk.getP();
         long y = pk.getY();
@@ -217,5 +218,55 @@ public class Elgamal2559 {
             return true;
         }
         return false;
+    }
+
+    private CipherText encryption(long message, long p, long g, long y) {
+        CipherText c = new CipherText();
+        long k = randomK(p);
+        c.setA(fastExponential(g, k, p));
+        long temp = fastExponential(y, k, p);
+        temp = (temp * message) % p;
+        c.setB(temp);
+        return c;
+    }
+
+    private long decryption(CipherText c, long u, long p) {
+        long message = 0;
+        long temp = fastExponential(c.getA(), p - 1 - u, p);
+        message = (temp * c.getB()) % p;
+        return message;
+    }
+
+    private long roundHash(long ti, ArrayList<Long> c, long p) {
+        long hi = 0;
+        long sum = 0;
+        for (int i = 0; i < c.size(); i++) {
+            sum += fastExponential(c.get(i), i + 2, p);
+        }
+        hi = (ti ^ sum) % p;
+        return hi;
+    }
+
+    private long polyHash(long p, ArrayList<CipherText> c, long alpha) {
+        long hashValue = 0;
+        ArrayList<Long> c2 = new ArrayList<Long>();
+        for (CipherText temp : c) {
+            c2.add(temp.getA());
+            c2.add(temp.getB());
+        }
+        long hi = 0;
+        for (int i = 0; i <= c2.size() / (k - 1); i++) {
+            ArrayList<Long> Bi = new ArrayList<Long>();
+            for (int j = 0; j < c2.size() - i * (k - 1); j++) {
+                int index = (i * ((int) k - 1)) + j;
+                Bi.add(c2.get(index));
+            }
+            if (i == 0) {
+                hi = roundHash(alpha, Bi, p);
+            } else {
+                hi = roundHash(hi, Bi, p);
+            }
+        }
+        return hi;
     }
 }
