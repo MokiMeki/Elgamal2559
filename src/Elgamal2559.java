@@ -1,10 +1,8 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Created by snow_ on 06-Dec-16.
@@ -18,6 +16,46 @@ public class Elgamal2559 {
         this.n = n;
         this.k = k;
         this.filePath = filePath;
+    }
+
+    public void startUserInterface(){
+        System.out.println("Welcome to Elgamal2559 CryptoEngine");
+        Scanner sc = new Scanner(System.in);
+        String strInput = "";
+        int intInput = 0;
+        int function = 0;
+        while(true){
+            System.out.println("\nWhat do you want to do? (Enter 1-5)");
+            System.out.println("1.Encryption");
+            System.out.println("2.Decryption");
+            System.out.println("3.Signature");
+            System.out.println("4.Verify");
+            System.out.println("5.CryptoHash");
+            System.out.println("6.GeneratePrivateKey");
+            System.out.println("7.getPublicKey");
+            System.out.println("0.Exit");
+            System.out.print("> ");
+            function = sc.nextInt();
+            switch (function){
+                case 0: System.exit(0);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6: writePrivateKeyToFile();
+                    break;
+                case 7: System.out.print(retrievePrivateKeyFromFile());
+                    break;
+                default: continue;
+            }
+        }
     }
 
     private long generateP(){
@@ -35,12 +73,33 @@ public class Elgamal2559 {
         return input;
     }
 
-    public PrivateKey generatePrivateKey(){
+    private PrivateKey generatePrivateKey(){
         long p = generateP();
         long g = genGenerator(p);
         long u = (long)(Math.random()*(p-2))+2;
         long y = fastExponential(g,u,p);
         return new PrivateKey(p,g,y,u);
+    }
+
+    public void writePrivateKeyToFile(){
+        PrivateKey privateKey = generatePrivateKey();
+        try (ObjectOutputStream oos =
+                     new ObjectOutputStream(new FileOutputStream("./Private.key"))) {
+            oos.writeObject(privateKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public PrivateKey retrievePrivateKeyFromFile(){
+        PrivateKey privateKey = null;
+        try (ObjectInputStream ois
+                     = new ObjectInputStream(new FileInputStream("./Private.key"))) {
+            privateKey = (PrivateKey) ois.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return privateKey;
     }
 
     private long log2of(long number){

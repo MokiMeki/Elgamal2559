@@ -1,4 +1,9 @@
-public class CipherText {
+import java.io.Serializable;
+
+public class CipherText implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private long a;
     private long b;
 

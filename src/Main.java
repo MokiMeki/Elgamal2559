@@ -3,10 +3,9 @@
  */
 public class Main {
     public static void main(String[] args){
-        System.out.println("Starting Elgamal2559");
+        System.out.println("Starting Elgamal2559...");
         Elgamal2559 cryptoEngine = new Elgamal2559();
-
-        cryptoEngine.
+        cryptoEngine.startUserInterface();
 
 
 
