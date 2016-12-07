@@ -183,4 +183,39 @@ public class Elgamal2559 {
         }
         return generator;
     }
+
+    public Signature sign(PrivateKey sk,long hashValue){
+        long p = sk.getP();
+        long k = randomK(p);
+        long r = fastExponential(sk.getG(),k,p);
+
+        long kInverse = inverseFromEuclidExtended(k,p-1);
+
+        // k^(-1) (X-xr) mod (p-1)
+        long s = (kInverse*((hashValue-((sk.getU()*r)%(p-1)))%(p-1)))%(p-1);
+
+        return new Signature(r,s);
+    }
+
+    private long randomK(long p) {
+        while (true) {
+            long k = (long) (Math.random() * (p - 1) + 1);
+            if (gcdFromEuclidExtended(k, p - 1) == 1) {
+                return k;
+            }
+        }
+    }
+
+    public boolean verifyHash(PublicKey pk, Signature sign, long hashValue){
+        long g = pk.getG();
+        long p = pk.getP();
+        long y = pk.getY();
+
+        long r = sign.getR();
+        long s = sign.getS();
+        if(fastExponential(g,hashValue,p)==((fastExponential(y,r,p)*fastExponential(r,s,p))%p)){
+            return true;
+        }
+        return false;
+    }
 }

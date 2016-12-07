@@ -10,7 +10,11 @@ public class Main {
 //        System.out.println("GCDFromExtendedEuclidTest: "+cryptoEngine.gcdFromEuclidExtended(2074000000,2000001000));
 //        System.out.println("GeneratorTest: "+cryptoEngine.genGenerator(391287787));
 //        System.out.println("Generate P Test " + cryptoEngine.generateP());
-        PrivateKey privateKey = cryptoEngine.generatePrivateKey();
+//        PrivateKey privateKey = cryptoEngine.generatePrivateKey();
+        PrivateKey privateKey = new PrivateKey(23,20,5,9);
         System.out.println(privateKey);
+        Signature sign = cryptoEngine.sign(privateKey,11);
+        System.out.println(sign);
+        System.out.println(cryptoEngine.verifyHash(privateKey.getPublicKey(),sign,11));
     }
 }
