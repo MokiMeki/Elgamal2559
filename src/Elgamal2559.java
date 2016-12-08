@@ -236,7 +236,13 @@ public class Elgamal2559 {
                     out[i++] = t2[k];
                 }
             }
-
+//            InputStream inp = new InputStream();
+//            image = ImageIO.read(inp.read(out));
+//
+//            ImageIO.write(image, "jpg",new File("C:\\out.jpg"));
+            
+            
+            
             ByteArrayOutputStream baos = null;
             DataOutputStream dos = null;
 
