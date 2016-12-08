@@ -1,7 +1,12 @@
+
+import java.io.Serializable;
+
 /**
  * Created by snow_ on 07-Dec-16.
  */
-public class Signature {
+public class Signature implements Serializable{
+    
+    private static final long serialVersionUID = 1L;
     private long r,s;
 
     public Signature(long r, long s) {
