@@ -159,7 +159,9 @@ public class Elgamal2559 {
         int count = 0;
         for (CipherText temp : c) {
             long d = decryption(temp, privateKey.getU(), privateKey.getP());
+            //System.out.println("DDD"+d);
             result[count++] = (int) d;
+            //System.out.println("DDD"+result[count-1]);
         }
         int i = 0;
         byte[] x = new byte[result.length * 4];
@@ -229,24 +231,32 @@ public class Elgamal2559 {
             if (!file.exists()) {
                 file.createNewFile();
             }
+            
             byte[] out = new byte[result.length * 4];
             for (int j = 0; j < result.length; j++) {
                 byte[] t2 = convertIntToByte(result[j]);
                 for (int k = 0; k < 4; k++) {
-                    out[i++] = t2[k];
+                  //  if (t2[k] != 0) {
+                        out[i++] = t2[k];
+                  //  }
                 }
             }
 //            InputStream inp = new InputStream();
 //            image = ImageIO.read(inp.read(out));
 //
 //            ImageIO.write(image, "jpg",new File("C:\\out.jpg"));
-            
-            
-            
+//
+//            BufferedImage bi = getMyImage();
+//            File outputfile = new File("saved.png");
+//            ImageIO.write(bi, "png", outputfile);
+
+//            InputStream in = new ByteArrayInputStream(out);
+//            BufferedImage bImageFromConvert = ImageIO.read(in);
+//            ImageIO.write(bImageFromConvert,"png",file);
+///////////////////
             ByteArrayOutputStream baos = null;
             DataOutputStream dos = null;
 
-            //baos = new ByteArrayOutputStream();
             dos = new DataOutputStream(fop);
 
             dos.write(out, 0, out.length);
